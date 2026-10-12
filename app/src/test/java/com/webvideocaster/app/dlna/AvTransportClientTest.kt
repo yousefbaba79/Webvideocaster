@@ -1,6 +1,5 @@
 package com.webvideocaster.app.dlna
 
-import com.sun.net.httpserver.HttpServer
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -8,33 +7,60 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import java.net.InetSocketAddress
+import java.io.BufferedInputStream
+import java.net.InetAddress
+import java.net.ServerSocket
+import kotlin.concurrent.thread
 
 class AvTransportClientTest {
-    private lateinit var server: HttpServer
+    private lateinit var server: ServerSocket
     private val requests = mutableListOf<Pair<String, String>>()
-    private var nextStatus = 200
-    private var nextBody = ""
+    @Volatile private var nextStatus = 200
+    @Volatile private var nextBody = ""
 
+    /** Minimal HTTP/1.1 server: the JDK's HttpServer is not on the Android unit-test classpath. */
     @Before
     fun startServer() {
-        server = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
-        server.createContext("/ctl") { exchange ->
-            val action = exchange.requestHeaders.getFirst("SOAPAction").orEmpty()
-            requests += action to exchange.requestBody.readBytes().toString(Charsets.UTF_8)
-            val bytes = nextBody.toByteArray()
-            exchange.sendResponseHeaders(nextStatus, bytes.size.toLong())
-            exchange.responseBody.use { it.write(bytes) }
+        server = ServerSocket(0, 50, InetAddress.getLoopbackAddress())
+        thread(isDaemon = true) {
+            while (!server.isClosed) {
+                val socket = runCatching { server.accept() }.getOrNull() ?: break
+                socket.use { handle(BufferedInputStream(it.getInputStream()), it.getOutputStream()) }
+            }
         }
-        server.start()
+    }
+
+    private fun handle(input: BufferedInputStream, output: java.io.OutputStream) {
+        val headers = mutableMapOf<String, String>()
+        generateSequence { readLine(input) }.drop(1).takeWhile { it.isNotEmpty() }.forEach { line ->
+            headers[line.substringBefore(':').trim().lowercase()] = line.substringAfter(':').trim()
+        }
+        val body = ByteArray(headers["content-length"]?.toInt() ?: 0)
+        var read = 0
+        while (read < body.size) read += input.read(body, read, body.size - read).takeIf { it > 0 } ?: break
+        synchronized(requests) { requests += headers["soapaction"].orEmpty() to body.toString(Charsets.UTF_8) }
+        val bytes = nextBody.toByteArray()
+        output.write("HTTP/1.1 $nextStatus X\r\nContent-Length: ${bytes.size}\r\nConnection: close\r\n\r\n".toByteArray())
+        output.write(bytes)
+        output.flush()
+    }
+
+    private fun readLine(input: BufferedInputStream): String? {
+        val line = StringBuilder()
+        while (true) {
+            val c = input.read()
+            if (c < 0) return if (line.isEmpty()) null else line.toString()
+            if (c == '\n'.code) return line.toString().trimEnd('\r')
+            line.append(c.toChar())
+        }
     }
 
     @After
     fun stopServer() {
-        server.stop(0)
+        server.close()
     }
 
-    private fun client() = AvTransportClient("http://127.0.0.1:${server.address.port}/ctl")
+    private fun client() = AvTransportClient("http://127.0.0.1:${server.localPort}/ctl")
 
     private fun respond(action: String, inner: String = "") {
         nextStatus = 200
