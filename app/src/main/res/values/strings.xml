@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WebVideoCaster</string>
+    <string name="url_hint">Search or type a web address</string>
+
+    <plurals name="videos_found">
+        <item quantity="one">%d video</item>
+        <item quantity="other">%d videos</item>
+    </plurals>
+
+    <string name="cast">Cast</string>
+    <string name="cast_devices">Cast devices</string>
+    <string name="now_playing">Now playing</string>
+    <string name="cast_link">Cast a link…</string>
+    <string name="reload">Reload</string>
+    <string name="forward">Forward</string>
+    <string name="home">Home</string>
+
+    <string name="detected_videos">Videos on this page</string>
+    <string name="detected_videos_hint">Tap to cast · long-press for more</string>
+    <string name="no_videos">No videos found yet. Start playing the video on the page and it will show up here.</string>
+
+    <string name="searching_devices">Searching for TVs…</string>
+    <string name="choose_device">Cast to</string>
+    <string name="no_devices_found">No devices found. Make sure the TV is on and on the same Wi-Fi.</string>
+
+    <string name="video_action_cast_to">Cast to another device…</string>
+    <string name="video_action_play_local">Play on this phone</string>
+    <string name="video_action_copy">Copy link</string>
+    <string name="link_copied">Link copied</string>
+    <string name="no_player_app">No app found to play this video</string>
+
+    <string name="cast_link_title">Cast a video link</string>
+    <string name="cast_link_hint">https://example.com/video.mp4</string>
+
+    <string name="connecting_to">Connecting to %1$s…</string>
+    <string name="connected_to">Connected to %1$s. Pick a video to play.</string>
+    <string name="sending_to">Sending to %1$s…</string>
+    <string name="cast_failed">Couldn\'t play on %1$s: %2$s</string>
+    <string name="nothing_playing">Nothing is casting right now.</string>
+    <string name="chromecast_load_failed">Chromecast couldn\'t play this video (error %1$d). The site may block casting.</string>
+    <string name="chromecast_connect_failed">Couldn\'t connect to %1$s</string>
+
+    <string name="playing_on">Playing on %1$s</string>
+    <string name="rewind">Back 10 seconds</string>
+    <string name="fast_forward">Forward 30 seconds</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="disconnect">Disconnect</string>
+
+    <string name="state_playing">Playing</string>
+    <string name="state_paused">Paused</string>
+    <string name="state_loading">Loading…</string>
+    <string name="state_stopped">Stopped</string>
+    <string name="state_unknown">Connected</string>
+    <string name="state_unreachable">Can\'t reach the TV</string>
+</resources>

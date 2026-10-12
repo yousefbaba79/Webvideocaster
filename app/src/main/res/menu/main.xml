@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/media_route_menu_item"
+        android:title="@string/cast"
+        app:actionProviderClass="androidx.mediarouter.app.MediaRouteActionProvider"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_devices"
+        android:icon="@drawable/ic_tv"
+        android:title="@string/cast_devices"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_now_playing"
+        android:title="@string/now_playing"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_cast_link"
+        android:title="@string/cast_link"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_reload"
+        android:title="@string/reload"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_forward"
+        android:title="@string/forward"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_home"
+        android:title="@string/home"
+        app:showAsAction="never" />
+</menu>
